@@ -1,0 +1,43 @@
+[package]
+name = "agentmon"
+version = "0.1.0"
+edition = "2024"
+description = "A macOS menu bar monitor for agent usage (ChatGPT, Claude, OpenCode Go) and agent status (Hermes, Amp)."
+license = "MIT"
+publish = false
+
+[dependencies]
+# Rune is pre-release: pin a rev of its `dev` branch, which is never rewritten.
+rune = { git = "https://github.com/anomalyco/rune", rev = "d6ab31b323eadd349e922ce38fb4dcb3b670b38c" }
+rune-kit = { git = "https://github.com/anomalyco/rune", rev = "d6ab31b323eadd349e922ce38fb4dcb3b670b38c" }
+serde = { version = "1", features = ["derive"] }
+toml = "0.9"
+
+# The menu bar item itself. Rune draws the popover; its tray API has no macOS backend yet, so the
+# app owns its NSStatusItem, as Rune's docs suggest for tray-controlled windows.
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", features = ["NSString", "NSGeometry", "NSArray"] }
+objc2-app-kit = { version = "0.3", features = [
+    "NSStatusBar",
+    "NSStatusItem",
+    "NSStatusBarButton",
+    "NSButton",
+    "NSControl",
+    "NSView",
+    "NSResponder",
+    "NSWindow",
+    "NSScreen",
+] }
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+# Dependencies (Rune, wgpu, text shaping) optimised even in debug, so `mise run run` animates smoothly.
+opt-level = 2
+debug = false
+
+[profile.release]
+codegen-units = 16
+incremental = true

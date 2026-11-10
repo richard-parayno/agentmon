@@ -1,0 +1,40 @@
+# Tool versions and tasks for agentmon. `mise install` fetches the toolchain; `mise run <task>`
+# runs a task with it on the PATH. `mise tasks` lists them.
+
+[tools]
+# Rune (the UI framework) pins this toolchain in its own repo; build with the same one.
+rust = { version = "1.99.1", components = "clippy,rustfmt" }
+
+[tasks.run]
+description = "Build (debug) and run agentmon in the menu bar"
+run = "cargo run"
+
+[tasks.dev]
+description = "Run an optimised build in the menu bar (smoother animation than debug)"
+run = "cargo run --release"
+
+[tasks.build]
+description = "Build the release binary"
+run = "cargo build --release"
+
+[tasks.bundle]
+description = "Wrap the release binary in target/release/Agentmon.app"
+depends = ["build"]
+run = "scripts/bundle.sh"
+
+[tasks.open]
+description = "Bundle and launch Agentmon.app like a normal Mac app"
+depends = ["bundle"]
+run = "open target/release/Agentmon.app"
+
+[tasks.snap]
+description = "Render the popover headless to target/agentmon.png (no window, no menu bar item)"
+run = "cargo run -- --snap target/agentmon.png"
+
+[tasks.test]
+description = "Run the tests"
+run = "cargo test"
+
+[tasks.lint]
+description = "Format check and clippy"
+run = ["cargo fmt --check", "cargo clippy --all-targets -- -D warnings"]

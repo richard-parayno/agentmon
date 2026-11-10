@@ -1,0 +1,21 @@
+# Copy to ~/.config/agentmon/config.toml (or point $AGENTMON_CONFIG at a file) and edit.
+# A provider without a table here is enabled. Keys besides `enabled` are passed to the provider.
+
+# Seconds between refreshes.
+refresh_secs = 60
+
+[providers.chatgpt]
+enabled = true
+
+[providers.claude]
+enabled = true
+
+[providers.hermes]
+enabled = true
+
+[providers.amp]
+enabled = true
+
+[providers.opencode_go]
+# Off until there's a way to read OpenCode Go usage.
+enabled = false
